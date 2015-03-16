@@ -9,7 +9,7 @@ import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.Filter.Chain;
 import groovy.util.logging.*
 import java.util.logging.Handler
-import java.util.logging.Logger 
+import java.util.logging.Logger
 import java.util.logging.Level
 import java.util.logging.LogManager
 import java.util.logging.ConsoleHandler;
@@ -18,85 +18,85 @@ import java.util.logging.ConsoleHandler;
 class MalabarServer {
   def cache = [:];
   def config = [ cache :cache ];
-    
+
   def start(String port) {
 
-    def mph = new MavenProjectHandler(config); 
+    def mph = new MavenProjectHandler(config);
     def addr = new InetSocketAddress(Integer.parseInt(port))
     def httpServer = com.sun.net.httpserver.HttpServer.create(addr, 0)
 
     def context = httpServer.createContext('/pi/', new JsonHandlerFactory(config).build({params ->
-      def pmIn = params["pm"];
-      def pm = (pmIn == null ? null : MalabarUtil.expandFile(pmIn));
-      mph.projectInfo(params["repo"], pm);}));
+      def pmfileIn = params["pmfile"];
+      def pmfile = (pmfileIn == null ? null : MalabarUtil.expandFile(pmfileIn));
+      mph.projectInfo(params["repo"], pmfile);}));
     context.getFilters().add(new ParameterFilter());
-    
+
     context = httpServer.createContext('/parse/', new JsonHandlerFactory(config).build({params ->
-	String pmIn = params["pm"];
-	def pm = (pmIn == null ? null : MalabarUtil.expandFile(pmIn));
-	mph.parse(params["repo"], pm, params["script"], params["scriptBody"],
+	String pmfileIn = params["pmfile"];
+	def pmfile = (pmfileIn == null ? null : MalabarUtil.expandFile(pmfileIn));
+	mph.parse(params["repo"], pmfile, params["script"], params["scriptBody"],
 		  params['parser']);}));
     context.getFilters().add(new ParameterFilter());
-    
+
     context = httpServer.createContext('/test/', new JsonHandlerFactory(config).build({params ->
-	def pmIn = params["pm"];
-	def pm = (pmIn == null ? null : MalabarUtil.expandFile(pmIn));
-	mph.unitTest(params["repo"], pm, params["script"], params["method"],
+	def pmfileIn = params["pmfile"];
+	def pmfile = (pmfileIn == null ? null : MalabarUtil.expandFile(pmfileIn));
+	mph.unitTest(params["repo"], pmfile, params["script"], params["method"],
 		     params['parser']);}));
     context.getFilters().add(new ParameterFilter());
-        
+
     context = httpServer.createContext('/exec/', new JsonHandlerFactory(config).build({params ->
-	def pmIn = params["pm"];
-	def pm = (pmIn == null ? null : MalabarUtil.expandFile(pmIn));
-	mph.exec(params["repo"], pm, params["class"], params["arg"]);}));
+	def pmfileIn = params["pmfile"];
+	def pmfile = (pmfileIn == null ? null : MalabarUtil.expandFile(pmfileIn));
+	mph.exec(params["repo"], pmfile, params["class"], params["arg"]);}));
     context.getFilters().add(new ParameterFilter());
-        
+
     context = httpServer.createContext('/tags/', new JsonHandlerFactory(config).build({params ->
-	def pmIn = params["pm"];
-	def pm = (pmIn == null ? null : MalabarUtil.expandFile(pmIn));
- 	mph.tags(params["repo"], pm, params["class"]);})); 
+	def pmfileIn = params["pmfile"];
+	def pmfile = (pmfileIn == null ? null : MalabarUtil.expandFile(pmfileIn));
+ 	mph.tags(params["repo"], pmfile, params["class"]);}));
     context.getFilters().add(new ParameterFilter());
-        
+
     context = httpServer.createContext('/debug/', new JsonHandlerFactory(config).build({params ->
       def lm = LogManager.getLogManager();
       lm.loggerNames.each( { if( it.startsWith("com.software_ninja")) {
 			       def l = lm.getLogger(it);
 			       MalabarUtil.setLevel(l, Level.FINEST);
 			     }});
-			    
 
 
-      
-      def pmIn = params["pm"];
-      def pm = (pmIn == null ? null : MalabarUtil.expandFile(pmIn));
-      mph.debug(params["repo"], pm)}));
+
+
+      def pmfileIn = params["pmfile"];
+      def pmfile = (pmfileIn == null ? null : MalabarUtil.expandFile(pmfileIn));
+      mph.debug(params["repo"], pmfile)}));
 
     context.getFilters().add(new ParameterFilter());
-        
+
     context = httpServer.createContext('/spawn/', new JsonHandlerFactory(config).build({params ->
-      
-      com.software_ninja.malabar.lang.NewVM.startSecondJVM(params["version"], params["jdk"], 
-							   params["port"], params["cwd"], 
-							   true); 
+
+      com.software_ninja.malabar.lang.NewVM.startSecondJVM(params["version"], params["jdk"],
+							   params["port"], params["cwd"],
+							   true);
       [ port : params['port'],
 	jdk  : params['jdk'],
 	version : params['version'],
 	cwd  : System.getProperty("user.dir"),
 	"class"  : params['class']] }));
     context.getFilters().add(new ParameterFilter());
-        
+
     context = httpServer.createContext('/resource/', new JsonHandlerFactory(config).build({params ->
-	def pmIn = params["pm"];
-	def pm = (pmIn == null ? null : MalabarUtil.expandFile(pmIn));
-	mph.resource(params["repo"], pm, params["pattern"], params["max"] as int, params['isClass'] as boolean,
+	def pmfileIn = params["pmfile"];
+	def pmfile = (pmfileIn == null ? null : MalabarUtil.expandFile(pmfileIn));
+	mph.resource(params["repo"], pmfile, params["pattern"], params["max"] as int, params['isClass'] as boolean,
 		     params['useRegex'] as boolean);}));
     context.getFilters().add(new ParameterFilter());
-        
+
     context = httpServer.createContext('/add/', new JsonHandlerFactory(config).build({params ->
       log.fine "ADD: " + params
       mph.additionalClasspath(params["relative"], params["absolute"]);}));
     context.getFilters().add(new ParameterFilter());
-        
+
     context = httpServer.createContext('/stop/', new JsonHandlerFactory(config).build({params ->  httpServer.stop(1); System.exit(0); }));
     context.getFilters().add(new ParameterFilter());
 
@@ -132,7 +132,7 @@ class ParameterFilter extends Filter {
 	  } finally {
 	    chain.doFilter(exchange);
 	  }
-    }    
+    }
 
     private void parseGetParameters(HttpExchange exchange)
         throws UnsupportedEncodingException {
