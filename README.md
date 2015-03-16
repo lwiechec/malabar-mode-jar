@@ -50,7 +50,7 @@ gradle -Dexec.args="-p 4429" run
 def malabar = { classLoader = new groovy.lang.GroovyClassLoader();
     Map[] grapez = [[group: 'com.software-ninja' , module:'malabar', version:'2.0.4']]
     groovy.grape.Grape.grab(classLoader: classLoader, grapez)
-    classLoader.loadClass('com.software_ninja.malabar.Malabar').newInstance().startCL(classLoader); }; 
+    classLoader.loadClass('com.software_ninja.malabar.Malabar').newInstance().startCL(classLoader); };
 malabar();
 ```
 
@@ -73,10 +73,10 @@ The add services adds additional classpath entries to the project's classloader
 
 ### Parameters
 
-| name | default | desc 
+| name | default | desc
 |------|---------|------
 | repo | none    | The location of the maven repo (something like /home/username/.m2/repository)
-| pm  | none    | The location of the pm to parse
+| pmfile  | none    | The location of the pm file to parse
 | relative  | none    | classpath entries relative to the project root dir, as a JSON list of strings
 | absolute  | none    | absolute path classpath entries  as a JSON list of strings
 
@@ -85,10 +85,10 @@ The pi services returns information from the maven pom.
 
 ### Parameters
 
-| name | default | desc 
+| name | default | desc
 |------|---------|------
 | repo | none    | The location of the maven repo (something like /home/username/.m2/repository)
-| pm  | none    | The location of the pm to parse
+| pmfile  | none    | The location of the pm file to parse
 
 
 ## parse
@@ -96,10 +96,10 @@ The parse services parses a source file or block of source code and returns a li
 
 ### Parameters
 
-| name | default | desc 
+| name | default | desc
 |------|---------|------
 | repo | ~/.m2/repository    | The location of the maven repo (something like /home/username/.m2/repository)
-| pm  | none    | The location of the pm to parse
+| pmfile  | none    | The location of the pm file to parse
 | script  | none    | The path on disk to the script to parse
 | scriptBody  | none    | The actual script to parse
 | strict  | none    | If true, force the parse to strict/static compilation
@@ -109,13 +109,13 @@ The resource services provides access to classes and other resources on the proj
 
 ### Parameters
 
-| name | default | desc 
+| name | default | desc
 |------|---------|------
 | repo | ~/.m2/repository    | The location of the maven repo (something like /home/username/.m2/repository)
-| pm  | none    | The location of the pm to parse
+| pmfile  | none    | The location of the pm file to parse
 | pattern  | none    | The pattern to search for
 | max  | none    | The maximum number of results to return
-| isClass  | true   | If true, only search for classes, If false, also return files. 
+| isClass  | true   | If true, only search for classes, If false, also return files.
 | useRegex  | true    | If true, treat pattern as a regex.  Otherwise, just treat it as a substring
 
 ## stop
@@ -123,7 +123,7 @@ The tags service shutsdown the http server and the JVM using System.exit.
 
 ### Parameters
 
-| name | default | desc 
+| name | default | desc
 |------|---------|------
 
 ## tags
@@ -131,10 +131,10 @@ The tags service returns the semantic tags for a class
 
 ### Parameters
 
-| name | default | desc 
+| name | default | desc
 |------|---------|------
 | repo | ~/.m2/repository    | The location of the maven repo (something like /home/username/.m2/repository)
-| pm  | none    | The location of the pm to parse
+| pmfile  | none    | The location of the pm file to parse
 | class  | none    | The binary or fully-qualified class name to reflect
 
 
@@ -143,10 +143,10 @@ The test service runs a unit test on either a whole class or just a single metho
 
 ### Parameters
 
-| name | default | desc 
+| name | default | desc
 |------|---------|------
 | repo | ~/.m2/repository    | The location of the maven repo (something like /home/username/.m2/repository)
-| pm  | none    | The location of the pm to parse
+| pm file | none    | The location of the pm file to parse
 | script  | none    | The path on disk to the script to parse
 | method  | none    | If not null, the name of the method to run.  If null, null all tests in the class
 
